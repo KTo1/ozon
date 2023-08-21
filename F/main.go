@@ -64,7 +64,7 @@ func main() {
 			fmt.Fscan(in, &times)
 
 			if !yesOrNo {
-				in = bufio.NewReader(os.Stdin)
+				in.Discard((timeCount - j - 1) * 19)
 				break
 			}
 
