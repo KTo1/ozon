@@ -3,17 +3,23 @@ package main
 import "fmt"
 
 func main() {
-	s := []int{1, 2, 3}
-	modify(s)
-	fmt.Println(s) // 2 2 2 3
+	a := make([]int, 0, 3)
+	a = append(a, 1)
+	a = append(a, 2)
+	a = append(a, 3)
+	// b := append(a, 4)
+	//
+	// a[2] = 10
+
+	abc(a)
+
+	fmt.Println(a) // 1 2 3
+	//	fmt.Println(b)
 }
 
-func modify(s []int) {
-	for i, n := range s {
-		s[i] = n * 2
-		if i%2 == 0 {
-			s = append(s, i*2)
-		}
-	}
-	fmt.Println("in func:", s) // 2 4 6 0 4
+func abc(a []int) {
+	a = append(a, 4)
+	fmt.Println(a) // 1 2 3 4
+	a[1] = 3
+	// _ = a
 }
