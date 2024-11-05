@@ -23,13 +23,19 @@ func (l *List) Add(value int) {
 	current.Next = newElem
 }
 
-func (l *List) Revese() {
+func (l *List) Reverse() {
 	current := l.head
+	var prev *Node = nil
 
-	for current.Next != nil {
-		current = current.Next
+	for current != nil {
+		next := current.Next
+		current.Next = prev
+
+		prev = current
+		current = next
 	}
 
+	l.head = prev
 }
 
 func main() {
@@ -40,4 +46,6 @@ func main() {
 
 	list.Add(1)
 	list.Add(2)
+
+	list.Reverse()
 }
