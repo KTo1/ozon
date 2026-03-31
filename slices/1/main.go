@@ -15,6 +15,7 @@ func main() {
 
 	fmt.Println(a) // 1 2 3
 	//	fmt.Println(b)
+
 }
 
 func abc(a []int) {
@@ -22,4 +23,5 @@ func abc(a []int) {
 	fmt.Println(a) // 1 2 3 4
 	a[1] = 3
 	// _ = a
+
 }

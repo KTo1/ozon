@@ -1,5 +1,5 @@
 module github.com/KTo1/ozon
 
-go 1.21.4
+go 1.23.11
 
-require github.com/jung-kurt/gofpdf v1.16.2 // indirect
+require github.com/jung-kurt/gofpdf v1.16.2
