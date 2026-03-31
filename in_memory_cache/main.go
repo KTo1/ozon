@@ -35,12 +35,12 @@ func NewMemoryCache(num int) *MemoryCache {
 }
 
 func (m *MemoryCache) Set(key string, value string) {
-	shardID := hash(key) / len(m.Shards)
+	shardID := hash(key) % len(m.Shards)
 	m.Shards[shardID].Set(key, value)
 }
 
 func (m *MemoryCache) Get(key string) (string, bool) {
-	shardID := hash(key) / len(m.Shards)
+	shardID := hash(key) % len(m.Shards)
 	return m.Shards[shardID].Get(key)
 }
 

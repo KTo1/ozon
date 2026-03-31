@@ -29,6 +29,9 @@ func SimulateRequest(ctx context.Context) (int64, error) {
 
 	ch := make(chan int64)
 
+	// тут получается что будет утечка горутин, в случае если программа будет работать до
+	// достаточно долго то все горутины поменяют счетчик, для сетевого вызова такое проканает
+	// он типа оборвется,  а в этом члучае надо подумать.
 	go func() {
 		time.Sleep(time.Duration(rand.Int63n(10)) * time.Second)
 		atomic.AddInt64(&counter, 1)
