@@ -1,7 +1,7 @@
 // Найдите и исправьте проблемы в коде ниже
 // у парковки ограниченное кол-во мест для парковки - обязательное условие
 // Программа должна отработать корректно и завершить работу без зависаний
-
+// решение сдалть буфер, пока буфер занят никто на парковку не заедет
 package main
 
 import (
@@ -12,16 +12,26 @@ import (
 
 type ParkingLot struct {
 	slots int64
+	buf   chan struct{}
 }
 
 func (p *ParkingLot) Park(carID int64) {
+	p.buf <- struct{}{}
 	fmt.Printf("Машина (%d) паркуется \n", carID)
 	time.Sleep(time.Second) // время стоянки
 	fmt.Printf("Машина (%d) уехала с парковки\n", carID)
+	<-p.buf
+}
+
+func NewParkingLot(slots int64) *ParkingLot {
+	return &ParkingLot{
+		slots: slots,
+		buf:   make(chan struct{}, slots),
+	}
 }
 
 func main() {
-	parking := &ParkingLot{slots: 3}
+	parking := NewParkingLot(3)
 
 	var wg sync.WaitGroup
 
