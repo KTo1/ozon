@@ -1,2 +1,2 @@
-# ozon
-ozone task
+# Go tasks
+Тут я собираю задачи с собесов по Go
