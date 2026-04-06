@@ -5,6 +5,7 @@ go 1.23.11
 require (
 	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/stretchr/testify v1.11.1
+	golang.org/x/sync v0.11.0
 )
 
 require (
