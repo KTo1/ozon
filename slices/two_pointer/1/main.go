@@ -35,7 +35,6 @@ func merge(a, b []int) []int {
 		}
 
 		fmt.Println(p1, "...", p2)
-
 	}
 
 	for i := p1; i <= len(a)-1; i++ {
