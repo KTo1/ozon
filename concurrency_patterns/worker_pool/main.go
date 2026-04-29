@@ -36,7 +36,7 @@ func generator() chan Task {
 	go func() {
 		defer close(ch)
 
-		for i := range 100 {
+		for i := range 20 {
 			ch <- Task{
 				ID:   i,
 				file: fmt.Sprintf("%d.txt", i),
@@ -50,11 +50,11 @@ func generator() chan Task {
 func main() {
 	ch := generator()
 
-	maxParallel := 3
+	maxWorkers := 3
 	result := make(chan string)
 
 	wg := sync.WaitGroup{}
-	for range maxParallel {
+	for range maxWorkers {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
