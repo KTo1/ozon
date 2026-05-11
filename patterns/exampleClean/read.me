@@ -1,0 +1,42 @@
+Orders API — Простая реализация чистая архитектуры (Clean Architecture)
+
+Проект следует принципам Роберта Мартина: зависимости направлены к центру, бизнес-логика изолирована от внешних слоёв. Используются только термины Entity, Use Case, Controller, Gateway.
+
+Структура проекта:
+
+domain/ — Entities (Order)
+
+usecases/boundaries.go — Input/Output Boundaries (интерфейсы)
+
+usecases/interactor.go — Interactor (реализация сценария)
+
+adapters/controller.go — входной адаптер (HTTP)
+
+adapters/gateway_sql.go — выходной адаптер (SQL-хранилище)
+
+main.go — сборка (Frameworks & Drivers)
+
+Как идёт запрос (CreateOrder):
+HTTP-запрос → Controller → Input Boundary (OrderInputBoundary) → Interactor (бизнес-логика) → Output Boundary (OrderRepository) → Gateway → База данных.
+
+Interactor выполняет сценарий (создание заказа), Controller превращает HTTP-вызовы в вызовы Interactor, Gateway реализует хранение.
+
+Почему так удобно:
+
+Тесты без инфраструктуры — Interactor тестируется с подменой репозитория, Controller — с подменой Input Boundary.
+
+Смена технологий — новый Gateway (MongoDB) или новый Controller (gRPC) добавляются без правки ядра.
+
+Явные границы — чёткое разделение на слои облегчает навигацию и рефакторинг.
+
+Запуск:
+Сборка — в main.go. Поддерживаются разные драйверы, настройка через переменную DATABASE_URL.
+
+
+Новый заказ
+curl -X POST http://localhost:8080/orders -H "Content-Type: application/json" -d "{\"user_id\": \"user-123\", \"amount\": 500}"
+ответ:
+{"ID":"6d00abbc-d025-4c25-9047-db1dfb1ae03c","UserID":"user-123","Amount":500}
+
+Получить заказ:
+curl -X POST http://localhost:8080/order -H "Content-Type: application/json" -d "{\"order_id\": \"ce252136-16aa-42e1-baec-6b4798e5b685\"}"
