@@ -5,15 +5,10 @@ Orders API — Простая реализация чистая архитект
 Структура проекта:
 
 domain/ — Entities (Order)
-
 usecases/boundaries.go — Input/Output Boundaries (интерфейсы)
-
 usecases/interactor.go — Interactor (реализация сценария)
-
 adapters/controller.go — входной адаптер (HTTP)
-
 adapters/gateway_sql.go — выходной адаптер (SQL-хранилище)
-
 main.go — сборка (Frameworks & Drivers)
 
 Как идёт запрос (CreateOrder):
@@ -22,11 +17,8 @@ HTTP-запрос → Controller → Input Boundary (OrderInputBoundary) → Int
 Interactor выполняет сценарий (создание заказа), Controller превращает HTTP-вызовы в вызовы Interactor, Gateway реализует хранение.
 
 Почему так удобно:
-
 Тесты без инфраструктуры — Interactor тестируется с подменой репозитория, Controller — с подменой Input Boundary.
-
 Смена технологий — новый Gateway (MongoDB) или новый Controller (gRPC) добавляются без правки ядра.
-
 Явные границы — чёткое разделение на слои облегчает навигацию и рефакторинг.
 
 Запуск:
