@@ -1,48 +1,95 @@
+// проектирование handler
 package main
 
 import (
 	"fmt"
+	"math/rand"
+	"net/http"
+	"strconv"
 	"sync"
+	"time"
 )
 
-func main() {
-	ch1 := make(chan int)
-	ch2 := make(chan int)
+type Server struct {
+	cache *int
+	mu    sync.Mutex
+	stop  bool
+}
 
-	go func() {
-		defer close(ch1)
-		defer close(ch2)
+func NewServer() *Server {
+	return &Server{}
+}
 
-		ch1 <- 1
-		ch1 <- 4
-		ch2 <- 2
-		ch2 <- 3
-	}()
+func (s *Server) GetLongTask() int {
+	s.mu.Lock()
+	if s.cache != nil {
+		s.mu.Unlock()
+		return *s.cache
+	}
 
-	ch3 := merge(ch1, ch2)
+	s.mu.Unlock()
 
-	for v := range ch3 {
-		fmt.Println(v)
+	res := LongTask()
+
+	s.mu.Lock()
+	s.cache = &res
+	s.mu.Unlock()
+
+	return res
+}
+
+func (s *Server) InvalidateCache() {
+	timer := time.NewTicker(5 * time.Second)
+	defer timer.Stop()
+
+	for {
+		if s.stop {
+			break
+		}
+
+		select {
+		case <-timer.C:
+			fmt.Println("invalidating cache")
+			res := LongTask()
+
+			s.mu.Lock()
+			s.cache = &res
+			s.mu.Unlock()
+		}
 	}
 }
 
-func merge(chans ...<-chan int) <-chan int {
-	out := make(chan int)
-	wg := &sync.WaitGroup{}
-	wg.Add(len(chans))
-	for _, ch := range chans {
-		go func() {
-			defer wg.Done()
-			for v := range ch {
-				out <- v
-			}
-		}()
+func (s *Server) Stop() {
+	s.stop = true
+}
+
+func LongTask() int {
+	//result := callService() // > 5 min
+	time.Sleep(10 * time.Second)
+	result := rand.Intn(100)
+
+	// process result
+	return result
+}
+
+func main() {
+	// init server
+
+	server := NewServer()
+	go server.InvalidateCache()
+
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		// write response
+		res := server.GetLongTask()
+		fmt.Println(res)
+		resStr := strconv.Itoa(res)
+		w.Write([]byte(resStr))
 	}
 
-	go func() {
-		defer close(out)
-		wg.Wait()
-	}()
+	http.HandleFunc("/", handler)
+	// run server
 
-	return out
+	http.ListenAndServe(":8888", nil)
+
+	server.Stop()
 }
